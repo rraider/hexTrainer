@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile - {{ other_user.username }}{% endblock %}
+
+{% block content %}
+<div>
+    <h2> Profile </h2>
+    <p>Username: {{ other_user.username }}</p>
+    <p>Email: {{ other_user.email }}</p>
+    
+    {% if other_user.id is user.id %}
+        <a role="button" href="{% url 'users:edit_profile' %}">Edit</a>
+    {% endif %}
+</div>
+{% endblock %}

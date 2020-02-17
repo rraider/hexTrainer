@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Start{% endblock %}
+
+{% block content %}
+<!-- interate through all posts, sorted by date-->
+<head>
+	<script>
+		let numberOfExercisesTodo = 10;
+		let updateTime = 31;
+
+		var timerIsRunning = false;
+		var points = 0;
+		var exercicesDone = 0;
+		var counter = updateTime - 1;
+
+		function Timer() {
+			counter--;
+			document.getElementById("remainingTime").innerHTML = "Time: " + counter;
+			if (counter <= 0) {
+				countUp();
+				setTimerIsRunning(false);
+				clearInterval(timer);
+			}
+		}
+
+		var timer;
+
+		function countUp() {
+			counter = updateTime;
+			exercicesDone++;
+			document.getElementById("numberOfExercices").innerHTML = "Done: " + exercicesDone + "/" + numberOfExercisesTodo;
+			if (numberOfExercisesTodo == exercicesDone) {
+				exercicesDone = 0;
+			}
+		}
+
+		function setTimerIsRunning(val) {
+			timerIsRunning = val;
+			if (timerIsRunning) {
+				document.getElementById("answerButton").disabled = false;
+			} else {
+				document.getElementById("answerButton").disabled = true;
+				document.getElementById("answer").value = "";
+			}
+		}
+
+		var hex = "";
+		var dec = 0;
+		var taskDir = 0;
+
+		function compare() {
+			let answer = document.getElementById("answer").value;
+			if (taskDir == 1) { dec = parseInt(answer); } 
+			else { hex = answer; }
+
+			if (dec.toString(16) == hex.toLowerCase()) {
+				points += (updateTime - counter);
+				clearInterval(timer);
+				countUp();
+				setTimerIsRunning(false);
+				document.getElementById("remainingTime").innerHTML = "Time: 0";
+				document.getElementById("points").innerHTML ="Points: " + points;
+			}
+		}
+
+		function newNumber() {
+			// choose if we will go from hex to dec or from dec to hex
+			taskDir = Math.floor(Math.random() * 2);
+			dec = Math.floor(Math.random() * 256);
+			if (taskDir == 1) { // translate from hex to dec
+				hex = dec.toString(16);
+				document.getElementById("info").innerHTML = "Hexadecimal: " + hex;
+			} else { // translate from dec to hex
+				hex = "";
+				document.getElementById("info").innerHTML = "Decimal: " + dec;
+			}
+			document.getElementById("answer").focus();
+		}
+
+		function playPause() {
+			setTimerIsRunning(true);
+			newNumber();
+			clearInterval(timer);
+			counter = updateTime;
+			timer = setInterval(Timer, 1000);
+		}
+	</script>
+
+</head>
+<body>
+    {% if not user.is_authenticated %}
+        <a role="button" href="{% url 'login' %}">Login</a>
+    {% else %}
+        <p> You are logged in as <a role="button" href="{% url 'users:profile_detail_view' user.id %}"> {{ user.username }}</a></p>
+        
+        <a role="button" href="{% url 'users:logout' %}">Logout</a>
+        <br>
+        <br>
+
+        <h4> Train </h4>
+        <hr>
+
+        <h5 id="points">Points: 0</h5>
+        <p id="info">Info</p>
+        <input type="text" id="answer"/>
+
+        <table>
+        	<tr style="width: 70%">
+        		<th><p id="numberOfExercices">Done: 0/10</p></th>
+        		<th><p id="remainingTime">Time: </p></th>
+        	</tr>
+        </table>
+
+        <button class="btn btn-sm btn-warning" id="answerButton" onclick="compare()" disabled>Answer</button>
+        <button class="btn btn-sm btn-primary" id="playPauseButton" onclick='playPause()'>Next</button>
+       
+
+    {% endif %}
+</body>
+
+{% endblock %}
+
+

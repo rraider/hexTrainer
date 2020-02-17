@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Logged out{% endblock %}
+{% block content %}
+<div style="padding: 10px 10px">
+	<h4>You are logged out</h4>
+	<p>
+		<a role="button" href="{% url 'login' %}">Login</a>
+		<a role="button" href="{% url 'users:signup' %}">Sign Up</a>
+	</p>
+</div>
+{% endblock %}
