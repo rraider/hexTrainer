@@ -1,0 +1,18 @@
+ADMINS:
+---
+Username: MoonBookUSer
+Password: root
+---
+Username: rraider
+Password: root
+
+
+
+USERS:
+---
+Username: testuser
+Password: Secret09
+---
+Username: testusa
+Password: testpassword
+---
