@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile - {{ other_user.username }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="header heading"> Benutzerkonto </h2>
+    <div class="content text">
+    
+    
+    <p>Username: {{ other_user.username }}</p>
+    <p>Email: {{ other_user.email }}</p>
+    <p>Xp: {{ other_user.xp }}</p>
+    
+    {% if other_user.id is user.id %}
+        <a role="button" href="{% url 'users:edit_profile' %}">Edit</a> <!-- edit the profile name -->
+    
+        <a role="button" href="{% url 'home:train' %}">Train</a> <!-- go to training page -->
+    {% endif %}
+</div></div>
+{% endblock %}
