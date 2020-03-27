@@ -25,7 +25,7 @@ SECRET_KEY = 'r7rk0td7lqlz@c-!bs_yb=-4u4bz-l8_3r0s#9z+fuk6rf5)42'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['trainer.exmd.de']
+ALLOWED_HOSTS = ['trainer.exmd.de', '127.0.0.1']
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
