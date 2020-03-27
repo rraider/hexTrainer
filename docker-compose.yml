@@ -1,0 +1,9 @@
+version: "3"
+
+services:
+   hextrainer:
+      image: hextrainer:latest
+      restart: always
+      volumes:
+        - ./mathtrainer:/usr/share/hextrainer
+      
