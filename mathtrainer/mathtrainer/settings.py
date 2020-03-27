@@ -12,6 +12,14 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 
+
+def get_env_value(env_variable, default_value):
+    try:
+        return os.environ[env_variable]
+    except KeyError:
+        return default_value
+
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
@@ -23,13 +31,12 @@ TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 SECRET_KEY = 'r7rk0td7lqlz@c-!bs_yb=-4u4bz-l8_3r0s#9z+fuk6rf5)42'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = get_env_value('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['trainer.exmd.de', '127.0.0.1']
+ALLOWED_HOSTS = [get_env_value('ALLOWED_HOST', 'localhost')]
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-    '/var/www/static/',
+    os.path.join(BASE_DIR, "mathtrainer", "static")
 ]
 
 # Application definition
@@ -41,16 +48,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+
     'users.apps.UsersConfig',
     'crispy_forms'
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -79,17 +86,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'mathtrainer.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, 'db', 'db.sqlite3'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -131,8 +136,41 @@ USE_TZ = True
 LOGIN_REDIRECT_URL = 'users:profile'
 
 STATIC_URL = '/static/'
-#STATIC_ROOT = os.path.join(BASE_DIR, 'static') Ich liebe es, etwas geht nicht, man kopiert den code aus der Dokumentation man hat zwar immer noch fehler die man aber diesmal ignoriert und tada! es klappt lol; naja. jetzt sollte das tun? zur not hab ich ja jetzt die doku, haha
+STATIC_ROOT = os.path.join(BASE_DIR, 'static') # Ich liebe es, etwas geht nicht, man kopiert den code aus der Dokumentation man hat zwar immer noch fehler die man aber diesmal ignoriert und tada! es klappt lol; naja. jetzt sollte das tun? zur not hab ich ja jetzt die doku, haha
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format' : "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+            'datefmt' : "%d/%b/%Y %H:%M:%S"
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers':['console'],
+            'propagate': True,
+            'level':'INFO',
+        },
+        'mathtrainer': {
+            'handlers': ['console'],
+            'level': 'INFO',
+        },
+    }
+}

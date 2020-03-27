@@ -1,3 +1,4 @@
 venv/
-venv/
-venv/
+mathtrainer/static
+data
+**/__pycache__/*

@@ -4,6 +4,12 @@ services:
    hextrainer:
       image: hextrainer:latest
       restart: always
+      ports:
+        - 8000:8000
+      environment:
+        DEBUG: "False"
+        ALLOWED_HOST: localhost
       volumes:
-        - ./mathtrainer:/usr/share/hextrainer
-      
+        - ./data:/usr/src/app/mathtrainer/db
+volumes:
+  hextrainer_data:

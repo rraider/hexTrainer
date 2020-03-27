@@ -1,2 +1,4 @@
 django
 django-crispy-forms
+gunicorn==19.6.0
+whitenoise==5.0.1
